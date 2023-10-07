@@ -8,16 +8,24 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        shell: bash -e {0}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
 
       - name: Notify Discussions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           body="A new version has been released. [Check it out here](${{ github.event.release.html_url }})."
+          echo "$body"  # 输出通知消息
           curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             -d "{\"body\":\"$body\"}" \
