@@ -1,0 +1,24 @@
+name: 发布新版本通知
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  通知:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v2
+
+      - name: 通知讨论区
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          body="新版本已发布，[点击这里](${{ github.event.release.html_url }})查看详情。"
+          curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{\"body\":\"$body\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/discussions/categories/bot-%E8%87%AA%E5%8A%A8%E6%8E%A8%E9%80%81/comments"
