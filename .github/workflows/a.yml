@@ -1,4 +1,4 @@
-name: 发布新版本通知
+name: Notify Discussions on Release
 
 on:
   release:
@@ -6,18 +6,18 @@ on:
       - published
 
 jobs:
-  通知:
+  notify:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检出代码
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: 通知讨论区
+      - name: Notify Discussions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          body="新版本已发布，[点击这里](${{ github.event.release.html_url }})查看详情。"
+          body="A new version has been released. [Check it out here](${{ github.event.release.html_url }})."
           curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             -d "{\"body\":\"$body\"}" \
